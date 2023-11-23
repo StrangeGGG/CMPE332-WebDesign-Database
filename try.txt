@@ -1,0 +1,62 @@
+<?php
+include 'connectedRe.php';
+?>
+<?php
+$orderdate = $_POST["order_date"];
+$datequery = 'select orderdate
+				from orderfood';
+$dateresult = $connection->query($datequery);
+while ($row = $dateresult->fetch()){
+	$datearray[]=$row;
+}
+foreach($datearray as $key => $value)
+{
+  echo $key." has the value". $value;
+}
+//$datearray = array($dateresult); 
+//while ($row=$dateresult->fetch()){
+$i=1;
+//while($i < sizeof($datearray)){
+while ($row=$dateresult->fetch()){
+	//if($orderdate == ($dateresult->fetch())["orderdate"]){
+	if($orderdate == $datearray[$i]){
+		echo "<li>";
+		echo "Here is the order:";
+		echo "</li>";
+		$query = 'select customer.firstName, customer.lastName, orderfood.item,
+								orderfood.price, orderfood.tip, delivery.name from customer
+								join CustomerPlaseOrderFromRestaurant on
+								customer.email = CustomerPlaseOrderFromRestaurant.CustomerEmail
+								join orderfood on
+								orderfood.ID = CustomerPlaseOrderFromRestaurant.orderID
+								join DeliverySchedule on
+								orderfood.id = DeliverySchedule.itemsID
+								join delivery on
+								DeliverySchedule.deliveryID = delivery.ID';
+		$result = $connection->query($query);
+		echo "<ol>";
+//while ($row= $result->fetch()) {
+	echo "<li>";
+	echo "First Name: ",($result->fetch())["firstName"]."</li>";
+	echo "<li>";
+	echo "Last Name: ",($result->fetch())["lastName"]."</li>";
+	echo "<li>";
+	echo "Order item: ",($result->fetch())["item"]."</li>";
+	echo "<li>";
+	echo "total amount: ",($result->fetch())["price"]."</li>";
+	echo "<li>";
+	echo "Tip: ",($result->fetch())["tip"]."</li>";
+	echo "<li>";
+	echo "Delivery name: ",($result->fetch())["name"]."</li>";
+//}
+	echo "</ol>";
+		$i++;
+	}else{
+		echo "Please choose another date";
+		$i++;
+	}
+}
+//}
+?>
+</body>
+</html>

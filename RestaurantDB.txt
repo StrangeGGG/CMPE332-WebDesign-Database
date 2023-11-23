@@ -1,0 +1,301 @@
+drop database if exists restaurantDB;
+create database restaurantDB;
+
+create table restaurant(
+	name varchar(50) not null,
+	URL varchar(50) not null,
+	street varchar(50),
+	city varchar(50),
+	pc char(6),
+	primary key(name, URL));
+	
+create table orderfood(
+	ID integer primary key not null,
+	item varchar(50),
+	price float,
+	delivery varchar(50),
+	deliverytime varchar(50),
+	OrderPlaseTime varchar(50),
+	tip integer);
+
+create table customer(
+	email varchar(50) primary key not null,
+	firstName varchar(50),
+	lastName varchar(50),
+	street varchar(50),
+	city varchar(50),
+	pc char(6),
+	phone char(10));
+	
+create table management(
+	ID integer primary key not null,
+	name varchar(50),
+	email varchar(50));
+	
+create table delivery(
+	ID integer primary key not null,
+	name varchar(50),
+	email varchar(50));
+	
+create table chef(
+	ID integer primary key not null,
+	name varchar(50),
+	email varchar(50));
+	
+create table servers(
+	ID integer primary key not null,
+	name varchar(50),
+	email varchar(50));
+
+create table ManagementSchedule(
+	listofdays date,
+	starttime varchar(50),
+	endtime varchar(50),
+	managementID integer not null,
+	primary key(managementID, listofdays),
+	foreign key(managementID) references management(ID) on delete cascade);
+	
+create table DeliverySchedule(
+	listofdays date,
+	starttime varchar(50),
+	endtime varchar(50),
+	deliveryID integer not null,
+	primary key(deliveryID, listofdays),
+	foreign key(deliveryID) references delivery(ID) on delete cascade);
+	
+create table ChefSchedule(
+	listofdays date,
+	starttime varchar(50),
+	endtime varchar(50),
+	chefID integer not null,
+	primary key(chefID, listofdays),
+	foreign key(chefID) references chef(ID) on delete cascade);
+	
+create table ServerSchedule(
+	listofdays date,
+	starttimr varchar(50),
+	endtime varchar(50),
+	serverID integer not null,
+	primary key(serverID, listofdays),
+	foreign key(serverID) references servers(ID) on delete cascade);
+
+create table account(
+	paymentdate date,
+	amountcredit float,
+	CustomerEmail varchar(50) not null,
+	primary key(CustomerEmail),
+	foreign key(CustomerEmail) references customer(email) on delete cascade);
+	
+create table CustomerPlaseOrderFromRestaurant(
+	orderID integer not null,
+	CustomerEmail varchar(50) not null,
+	RestaurantName varchar(50) not null,
+	RestaurantURL varchar(50) not null,
+	primary key(orderID, CustomerEmail, RestaurantName, RestaurantURL),
+	foreign key(orderID) references orderfood(ID) on delete cascade,
+	foreign key(CustomerEmail) references customer(email) on delete cascade,
+	foreign key(RestaurantName, RestaurantURL) references restaurant(name, URL) on delete cascade);
+	
+create table CustomerEmployeeRelationship(
+	CustomerEmail varchar(50) not null,
+	managementID integer not null,
+	deliveryID integer not null,
+	chefID integer not null,
+	serverID integer not null,
+	primary key(CustomerEmail, managementID, deliveryID, chefID, serverID),
+	foreign key(CustomerEmail) references customer(email) on delete cascade,
+	foreign key(managementID) references management(ID) on delete cascade,
+	foreign key(deliveryID) references delivery(ID) on delete cascade,
+	foreign key(chefID) references chef(ID) on delete cascade,
+	foreign key(serverID) references servers(ID) on delete cascade);
+	
+create table EmployeeWorkinRestaurant(
+	RestaurantName varchar(50) not null,
+	RestaurantURL varchar(50) not null,
+	foreign key(RestaurantName, RestaurantURL) references restaurant(name, URL) on delete cascade);
+    
+create table company(
+	RestaurantName varchar(50) not null,
+	RestaurantURL varchar(50) not null,
+	foreign key(RestaurantName, RestaurantURL) references restaurant(name, URL) on delete cascade);
+	
+create table onlinemenu(
+	RestaurantName varchar(50) not null,
+	RestaurantURL varchar(50) not null,
+	foreign key(RestaurantName, RestaurantURL) references restaurant(name, URL) on delete cascade);
+	
+create table credentials(
+	chefID integer not null,
+	credentials varchar(50) not null,
+	primary key(chefID, credentials),
+	foreign key(chefID) references chef(ID) on delete cascade);
+
+create table food(
+	name varchar(50),
+	food varchar(50) not null,
+	primary key(food));
+
+create table price(
+	price varchar(50) not null,
+	primary key(price));
+
+insert into restaurant values
+('Mike','https: mike','abc','kingston','k3d05l'),
+('Jhon','https: jhon','cdb','kingston','o3s8j7'),
+('Amy','https: amy','dem','kingston','m3j8a7'),
+('Harvey','https: harvey','lkf','kingston','c0r3kf'),
+('Lin','https: lin','oig','kingston','g4h8e1'),
+('James','https: james','omg','kingston','f6z5h2');
+
+insert into orderfood values
+(1,'burger',5.0,'Jam','12:00','11:00',5),
+(2,'pizza',10.0,'Han','9:10','8:30',6),
+(3,'hotdog',7.0,'Wu','18:06','17:50',7),
+(4,'rice',2.0,'Tian','19:01','18:30',8),
+(5,'chicken',15.0,'Jimy','20:00','19:40',9),
+(6,'pork',25.0,'Dave','11:30','10:50',10);
+
+insert into customer values
+('123@mail','Miriam','Shubham','gmh','kingston','f7j3d8','1234567890'),
+('456@mail','Romy','Thannasis','edg','kingston','f9lg5b','1111234567'),
+('789@mail','Mac','Nout','yuh','kingston','l5k20d','1209475683'),
+('012@mail','Nikhil','Kyveli','yhg','kingston','v943lf','2103487364'),
+('245@mail','Sam','Aldus','hkl','kingston','c9l5a3','4957202756'),
+('369@mail','Modesto','Chloe','blg','kingston','d3o5hz','5820475620');
+
+insert into management values
+(10,'asv','abc@mail'),
+(11,'dcv','dcvfed@mail'),
+(12,'ase','scvrq@mail'),
+(13,'fadfvew','vregve@mail'),
+(14,'rgmrg','scevv@mail'),
+(15,'adnef','vwfwwe@mail');
+
+insert into delivery values
+(16,'dqfwef','fqefqwfh@mail'),
+(17,'vwef','cwcn@mail'),
+(18,'fwefwn','cewkjngwe@mail'),
+(19,'fadjoief','cwenvkwe@mail'),
+(20,'pofrm','pijng@mail'),
+(21,'prfrbn','cwenfwvhrld@mail');
+
+insert into chef values
+(22,'nytn','fqefcwevfh@mail'),
+(23,'nuyjki','cwcdcsfn@mail'),
+(24,'fwemiu','cedewdwe@mail'),
+(25,'fadjomiu','cwecwvecwce@mail'),
+(26,'pofrmht','pcieng@mail'),
+(27,'prfrnty','devwvhrld@mail');
+
+insert into servers values
+(28,'dqfwnyt','povndwfh@mail'),
+(29,'vwwef','cwcnvd@mail'),
+(30,'fwevrg','coifbgwe@mail'),
+(31,'fadjgth6','pqockwe@mail'),
+(32,'pobyn','cwcweeng@mail'),
+(33,'prfrbnge','popqenfwvhrld@mail');
+
+insert into ManagementSchedule values
+('2001-03-03','12:00','13:02',10),
+('2001-04-05','9:00','10:02',11),
+('2001-05-06','10:00','11:02',12),
+('2001-07-08','12:30','13:03',13),
+('2001-09-08','12:50','13:10',14),
+('2001-08-10','12:45','13:05',15);
+
+insert into DeliverySchedule values
+('2002-03-03','12:00','13:02',16),
+('2002-04-05','9:00','10:02',17),
+('2002-05-06','10:00','11:02',18),
+('2002-07-08','12:30','13:03',19),
+('2002-09-08','12:50','13:10',20),
+('2002-08-10','12:45','13:05',21);
+
+insert into ChefSchedule values
+('2003-03-03','12:00','13:02',22),
+('2003-04-05','9:00','10:02',23),
+('2003-05-06','10:00','11:02',24),
+('2003-07-08','12:30','13:03',25),
+('2003-09-08','12:50','13:10',26),
+('2003-08-10','12:45','13:05',27);
+
+insert into ServerSchedule values
+('2004-03-03','12:00','13:02',28),
+('2004-04-05','9:00','10:02',29),
+('2004-05-06','10:00','11:02',30),
+('2004-07-08','12:30','13:03',31),
+('2004-09-08','12:50','13:10',32),
+('2004-08-10','12:45','13:05',33);
+
+insert into account values
+('2022-01-01',15.0,'123@mail'),
+('2022-04-09',33.0,'456@mail'),
+('2022-06-05',26.0,'789@mail'),
+('2022-01-20',19.0,'012@mail'),
+('2022-07-31',45.0,'245@mail'),
+('2022-08-31',32.0,'369@mail');
+
+insert into CustomerPlaseOrderFromRestaurant values
+(1,'123@mail','Mike','https: mike'),
+(2,'456@mail','Jhon','https: jhon'),
+(3,'789@mail','Amy','https: amy'),
+(4,'012@mail','Harvey','https: harvey'),
+(5,'245@mail','Lin','https: lin'),
+(6,'369@mail','James','https: james');
+
+insert into CustomerEmployeeRelationship values
+('123@mail',10,16,22,28),
+('456@mail',11,17,23,29),
+('789@mail',12,18,24,30),
+('012@mail',13,19,25,31),
+('245@mail',14,20,26,32),
+('369@mail',15,21,27,33);
+
+insert into EmployeeWorkinRestaurant values
+('Mike','https: mike'),
+('Jhon','https: jhon'),
+('Amy','https: amy'),
+('Harvey','https: harvey'),
+('Lin','https: lin'),
+('James','https: james');
+
+insert into company values
+('Mike','https: mike'),
+('Jhon','https: jhon'),
+('Amy','https: amy'),
+('Harvey','https: harvey'),
+('Lin','https: lin'),
+('James','https: james');
+
+insert into onlinemenu values
+('Mike','https: mike'),
+('Jhon','https: jhon'),
+('Amy','https: amy'),
+('Harvey','https: harvey'),
+('Lin','https: lin'),
+('James','https: james');
+
+insert into credentials values
+(22,'wfcdsv'),
+(23,'frgre'),
+(24,'kouu'),
+(25,'hgtrgrgrt'),
+(26,'ferhyjrthg'),
+(27,'ju6rth56hj');
+
+insert into food values
+('fryrice','100'),
+('chickenrice','200'),
+('porkrice','300'),
+('beefrice','400'),
+('carrotrice','500'),
+('noodles','600');
+
+insert into price values
+('15.00'),
+('25.00'),
+('35.00'),
+('10.00'),
+('18.00'),
+('19.00');
+	
